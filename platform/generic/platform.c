@@ -200,7 +200,12 @@ fail:
 
 bool generic_cold_boot_allowed(u32 hartid)
 {
-	return hartid == 0;
+	for (int i = 0; i < platform.hart_count; i++) {
+		if (hartid == generic_hart_index2id[i])
+			return bitmap_test(generic_coldboot_harts, i);
+	}
+	return false;
+
 }
 
 int generic_nascent_init(void)
