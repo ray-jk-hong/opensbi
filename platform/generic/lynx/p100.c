@@ -32,7 +32,7 @@ static int lynx_p100_platform_init(const void *fdt, int nodeoff, const struct fd
 	int len, coff;
 
 	coff = fdt_path_offset(fdt, "/chosen");
-	if (-1 < coff) {
+	if (coff > -1) {
 		val = fdt_getprop(fdt, coff, "boot-hart-id", &len);
 		if (val && len >= sizeof(fdt32_t))
 			boot_hartid = (u32) fdt32_to_cpu(*val);
