@@ -38,6 +38,7 @@
 #define SBI_EXT_SSE				0x535345
 #define SBI_EXT_FWFT				0x46574654
 #define SBI_EXT_MPXY				0x4D505859
+#define SBI_EXT_RVD				0x525644
 
 /* SBI function IDs for BASE extension*/
 #define SBI_EXT_BASE_GET_SPEC_VERSION		0x0
@@ -50,6 +51,9 @@
 
 /* SBI function IDs for TIME extension*/
 #define SBI_EXT_TIME_SET_TIMER			0x0
+
+#define SBI_EXT_RVD_GET_ALL_CSRS		0x0
+#define SBI_EXT_RVD_GET_CSR			0x1
 
 /* SBI function IDs for IPI extension*/
 #define SBI_EXT_IPI_SEND_IPI			0x0
