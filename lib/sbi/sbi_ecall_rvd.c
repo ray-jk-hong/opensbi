@@ -6,39 +6,37 @@
  * Authors:
  *   Zaiguang Hong <zaiguang.hong@riscv-computing.com>
  */
+#include <sbi/sbi_domain.h>
 #include <sbi/sbi_error.h>
 #include <sbi/sbi_ecall.h>
 #include <sbi/sbi_ecall_interface.h>
+#include <sbi/sbi_hart.h>
+#include <sbi/sbi_rvd.h>
 #include <sbi/sbi_trap.h>
 
-static int sbi_rvd_get_csr(unsigned long csr, unsigned long *value)
-{
-	return 0;
-}
-
-static int sbi_rvd_get_all_csrs(unsigned long count, unsigned long *values)
-{
-	return 0;
-}
-
 static int sbi_ecall_rvd_handler(unsigned long extid, unsigned long funcid,
-					struct sbi_trap_regs *regs,
-					struct sbi_ecall_return *out)
+				 struct sbi_trap_regs *regs,
+				 struct sbi_ecall_return *out)
 {
-	int ret = SBI_ENOTSUPP;
+	int ret;
+	ulong val;
+	unsigned long tgt_hart = regs->a0;
+	int csrno = (int)regs->a1;
 
-	switch (funcid) {
-	case SBI_EXT_RVD_GET_ALL_CSRS:
-		ret = sbi_rvd_get_all_csrs(regs->a0, &out->value);
-		break;
-	case SBI_EXT_RVD_GET_CSR:
-		ret = sbi_rvd_get_csr(regs->a0, &out->value);
-		break;
-	default:
-		break;
-	}
+	if (funcid != SBI_EXT_RVD_REMOTE_CSR_READ)
+		return SBI_ENOTSUPP;
 
-	return ret;
+	if (!sbi_domain_is_assigned_hart(
+		    sbi_domain_thishart_ptr(),
+		    sbi_hartid_to_hartindex((u32)tgt_hart)))
+		return SBI_EINVAL;
+
+	ret = sbi_rvd_request((int)tgt_hart, csrno, &val);
+	if (ret)
+		return ret;
+
+	out->value = val;
+	return SBI_OK;
 }
 
 struct sbi_ecall_extension ecall_rvd;

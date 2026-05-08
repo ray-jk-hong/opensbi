@@ -27,6 +27,9 @@
 #include <sbi/sbi_dbtr.h>
 #include <sbi/sbi_mpxy.h>
 #include <sbi/sbi_sse.h>
+#ifdef CONFIG_SBI_ECALL_RVD
+#include <sbi/sbi_rvd.h>
+#endif
 #include <sbi/sbi_system.h>
 #include <sbi/sbi_string.h>
 #include <sbi/sbi_timer.h>
@@ -301,6 +304,14 @@ static void __noreturn init_coldboot(struct sbi_scratch *scratch, u32 hartid)
 		sbi_hart_hang();
 	}
 
+#ifdef CONFIG_SBI_ECALL_RVD
+	rc = sbi_rvd_init(scratch, true);
+	if (rc) {
+		sbi_printf("%s: rvd init failed (error %d)\n", __func__, rc);
+		sbi_hart_hang();
+	}
+#endif
+
 	rc = sbi_timer_init(scratch, true);
 	if (rc) {
 		sbi_printf("%s: timer init failed (error %d)\n", __func__, rc);
@@ -445,6 +456,12 @@ static void __noreturn init_warm_startup(struct sbi_scratch *scratch,
 	rc = sbi_tlb_init(scratch, false);
 	if (rc)
 		sbi_hart_hang();
+
+#ifdef CONFIG_SBI_ECALL_RVD
+	rc = sbi_rvd_init(scratch, false);
+	if (rc)
+		sbi_hart_hang();
+#endif
 
 	rc = sbi_timer_init(scratch, false);
 	if (rc)

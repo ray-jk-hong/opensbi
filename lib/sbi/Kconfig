@@ -71,7 +71,8 @@ config SBI_ECALL_MPXY
 	default y
 
 config SBI_ECALL_RVD
-	bool "RVD extension"
+	bool "RVD extension (remote CSR read ecall)"
 	default y
+	depends on SBI_ECALL_IPI
 
 endmenu

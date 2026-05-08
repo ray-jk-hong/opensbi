@@ -52,8 +52,13 @@
 /* SBI function IDs for TIME extension*/
 #define SBI_EXT_TIME_SET_TIMER			0x0
 
-#define SBI_EXT_RVD_GET_ALL_CSRS		0x0
-#define SBI_EXT_RVD_GET_CSR			0x1
+/*
+ * RVD (custom): remote CSR read in M-mode on @hartid.
+ * SBI call: a7 = SBI_EXT_RVD, a6 = SBI_EXT_RVD_REMOTE_CSR_READ,
+ *           a0 = target physical hartid, a1 = CSR number.
+ * Returns:  a0 = error (SBI_*), a1 = CSR value (XLEN) on success.
+ */
+#define SBI_EXT_RVD_REMOTE_CSR_READ		0x0
 
 /* SBI function IDs for IPI extension*/
 #define SBI_EXT_IPI_SEND_IPI			0x0
