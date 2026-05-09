@@ -55,15 +55,20 @@ static unsigned long rvd_csr_read(int csrno)
 	unsigned long ret = 0;
 
 	switch (csrno) {
+	switchcase_csr_read(CSR_CYCLE, ret);
+	switchcase_csr_read(CSR_TIME, ret);
+	switchcase_csr_read(CSR_INSTRET, ret);
+
 	switchcase_csr_read(CSR_SSTATUS, ret);
 	switchcase_csr_read(CSR_SIE, ret);
 	switchcase_csr_read(CSR_STVEC, ret);
 	switchcase_csr_read(CSR_SCOUNTEREN, ret);
 	switchcase_csr_read(CSR_SENVCFG, ret);
-	switchcase_csr_read(CSR_SCOUNTINHIBIT, ret);
 	switchcase_csr_read(CSR_SSCRATCH, ret);
 	switchcase_csr_read(CSR_SEPC, ret);
 	switchcase_csr_read(CSR_SCAUSE, ret);
+	switchcase_csr_read(CSR_STVAL, ret);
+	switchcase_csr_read(CSR_SIP, ret);
 	switchcase_csr_read(CSR_SATP, ret);
 
 	switchcase_csr_read(CSR_MCYCLE, ret);
@@ -82,6 +87,8 @@ static unsigned long rvd_csr_read(int csrno)
 	switchcase_csr_read(CSR_MISA, ret);
 	switchcase_csr_read(CSR_MEDELEG, ret);
 	switchcase_csr_read(CSR_MIDELEG, ret);
+	switchcase_csr_read(CSR_MENVCFG, ret);
+
 	default:
 		break;
 	};
