@@ -45,6 +45,51 @@ struct rvd_hart {
 	struct rvd_que deq;
 };
 
+static unsigned long rvd_csr_read(int csrno)
+{
+#define switchcase_csr_read(__csr_num, __val)		\
+	case __csr_num:					\
+		__val = csr_read(__csr_num);		\
+		break;
+
+	unsigned long ret = 0;
+
+	switch (csrno) {
+	switchcase_csr_read(CSR_SSTATUS, ret);
+	switchcase_csr_read(CSR_SIE, ret);
+	switchcase_csr_read(CSR_STVEC, ret);
+	switchcase_csr_read(CSR_SCOUNTEREN, ret);
+	switchcase_csr_read(CSR_SENVCFG, ret);
+	switchcase_csr_read(CSR_SCOUNTINHIBIT, ret);
+	switchcase_csr_read(CSR_SSCRATCH, ret);
+	switchcase_csr_read(CSR_SEPC, ret);
+	switchcase_csr_read(CSR_SCAUSE, ret);
+	switchcase_csr_read(CSR_SATP, ret);
+
+	switchcase_csr_read(CSR_MCYCLE, ret);
+	switchcase_csr_read(CSR_MCAUSE, ret);
+	switchcase_csr_read(CSR_MTVAL, ret);
+	switchcase_csr_read(CSR_MIP, ret);
+	switchcase_csr_read(CSR_MIE, ret);
+	switchcase_csr_read(CSR_MCOUNTEREN, ret);
+	switchcase_csr_read(CSR_MSCRATCH, ret);
+	switchcase_csr_read(CSR_MVENDORID, ret);
+	switchcase_csr_read(CSR_MARCHID, ret);
+	switchcase_csr_read(CSR_MIMPID, ret);
+	switchcase_csr_read(CSR_MHARTID, ret);
+	switchcase_csr_read(CSR_MCONFIGPTR, ret);
+	switchcase_csr_read(CSR_MSTATUS, ret);
+	switchcase_csr_read(CSR_MISA, ret);
+	switchcase_csr_read(CSR_MEDELEG, ret);
+	switchcase_csr_read(CSR_MIDELEG, ret);
+	default:
+		break;
+	};
+
+#undef switchcase_csr_read
+	return ret;
+}
+
 /* Work queue: other harts enqueue jobs we execute on this hart. */
 static int rvd_work_enqueue(struct sbi_scratch *scratch, struct rvd_entity *entity)
 {
@@ -127,7 +172,7 @@ static int rvd_que_init(struct sbi_scratch *scratch)
 
 static inline void rvd_local_process(struct rvd_entity *entity)
 {
-	entity->value = csr_read_num(entity->csrno);
+	entity->value = rvd_csr_read(entity->csrno);
 }
 
 /**

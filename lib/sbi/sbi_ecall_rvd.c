@@ -26,11 +26,6 @@ static int sbi_ecall_rvd_handler(unsigned long extid, unsigned long funcid,
 	if (funcid != SBI_EXT_RVD_REMOTE_CSR_READ)
 		return SBI_ENOTSUPP;
 
-	if (!sbi_domain_is_assigned_hart(
-		    sbi_domain_thishart_ptr(),
-		    sbi_hartid_to_hartindex((u32)tgt_hart)))
-		return SBI_EINVAL;
-
 	ret = sbi_rvd_request((int)tgt_hart, csrno, &val);
 	if (ret)
 		return ret;
